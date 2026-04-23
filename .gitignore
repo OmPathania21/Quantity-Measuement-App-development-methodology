@@ -1,0 +1,34 @@
+# Build directories
+target/
+build/
+dist/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Maven
+.m2/
+
+# Gradle
+.gradle/
+.gradletasknamecache
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# System files
+.DS_Store
+Thumbs.db
