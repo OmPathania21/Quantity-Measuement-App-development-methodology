@@ -6,20 +6,32 @@ import java.util.Objects;
  * It uses a generic Quantity class with unit support to eliminate code duplication
  * and apply the DRY (Don't Repeat Yourself) principle.
  * 
- * UC3 Refactoring: Consolidates Feet and Inches into a single Quantity class
+ * UC1: Implements Feet measurement equality checking with full equals contract.
+ * UC2: Extends UC1 to include Inches with separate equality check methods.
+ * UC3 Refactoring: Consolidates Feet and Inches into a single generic Quantity class
  * with support for multiple units defined via LengthUnit enum.
+ * UC4 Extension: Adds Yards and Centimeters as additional units, demonstrating
+ * the scalability and extensibility of the generic Quantity design.
  */
 public class QuantityMeasurementApp {
 
     /**
      * Enum representing different length units and their conversion factors to feet (base unit).
      * This encapsulates all supported measurement units and their relationships.
+     * 
+     * Supported Units:
+     * - FEET (1.0): Base unit for all conversions
+     * - INCH (1/12): 1 inch = 1/12 foot
+     * - YARD (3.0): 1 yard = 3 feet (UC4 Extension)
+     * - CENTIMETER (0.0328084): 1 cm ≈ 0.0328084 feet (UC4 Extension)
+     * 
+     * UC4: Demonstrates scalability by adding new units without modifying existing code.
      */
     public enum LengthUnit {
         FEET(1.0),           // Base unit: 1 foot = 1 foot
         INCH(1.0 / 12.0),    // 1 inch = 1/12 foot
         YARD(3.0),           // 1 yard = 3 feet
-        CENTIMETER(0.0328084); // 1 cm = 0.0328084 feet (approximately)
+        CENTIMETER(1.0 / 30.48); // 1 cm = 1/30.48 feet (since 1 inch = 2.54 cm)
 
         private final double conversionFactorToFeet;
 
@@ -57,7 +69,11 @@ public class QuantityMeasurementApp {
      * This class eliminates code duplication by handling all unit types in a single class.
      * Immutable class that encapsulates a measurement value and its unit.
      * 
-     * UC3: Refactored to follow DRY principle and eliminate separate Feet/Inches classes.
+     * Features:
+     * - UC3: Refactored to follow DRY principle and eliminate separate Feet/Inches classes
+     * - UC4: Works seamlessly with new units (YARD, CENTIMETER) without code changes
+     * - Cross-unit comparison: 1 foot = 12 inches = 1/3 yard automatically
+     * - Type-safe: All units are enum-based, eliminating magic strings
      */
     public static class Quantity {
         private final double value;
@@ -490,6 +506,55 @@ public class QuantityMeasurementApp {
         // Test Case 21: Static method with same unit
         boolean sameUnitResult = checkQuantityEquality(1.0, LengthUnit.FEET, 1.0, LengthUnit.FEET);
         System.out.println("Test 21 - Static method: 1.0 ft and 1.0 ft: " + sameUnitResult);
+
+        System.out.println("\n========== UC4: Extended Unit Support (Yards and Centimeters) ==========");
+
+        // Yard to Yard comparison
+        Quantity yard_qty_same1 = new Quantity(2.0, LengthUnit.YARD);
+        Quantity yard_qty_same2 = new Quantity(2.0, LengthUnit.YARD);
+        System.out.println("Test 22 - Yard to Yard (2.0 yard and 2.0 yard): " + yard_qty_same1.equals(yard_qty_same2));
+
+        // Yard to Feet conversion (1 yard = 3 feet)
+        Quantity one_yard_qty = new Quantity(1.0, LengthUnit.YARD);
+        Quantity three_feet_qty = new Quantity(3.0, LengthUnit.FEET);
+        System.out.println("Test 23 - Cross-Unit: 1.0 yard and 3.0 feet: " + one_yard_qty.equals(three_feet_qty));
+
+        // Yard to Inches conversion (1 yard = 36 inches)
+        Quantity one_yard_inch = new Quantity(1.0, LengthUnit.YARD);
+        Quantity thirty_six_inches = new Quantity(36.0, LengthUnit.INCH);
+        System.out.println("Test 24 - Cross-Unit: 1.0 yard and 36.0 inches: " + one_yard_inch.equals(thirty_six_inches));
+
+        // Centimeter to Centimeter comparison
+        Quantity cm_qty_same1 = new Quantity(2.0, LengthUnit.CENTIMETER);
+        Quantity cm_qty_same2 = new Quantity(2.0, LengthUnit.CENTIMETER);
+        System.out.println("Test 25 - Centimeter to Centimeter (2.0 cm and 2.0 cm): " + cm_qty_same1.equals(cm_qty_same2));
+
+        // Centimeter to Inches conversion (2.54 cm = 1 inch exactly)
+        Quantity two_point_54_cm = new Quantity(2.54, LengthUnit.CENTIMETER);
+        Quantity one_inch_cm = new Quantity(1.0, LengthUnit.INCH);
+        System.out.println("Test 26 - Cross-Unit: 2.54 cm and 1.0 inch: " + two_point_54_cm.equals(one_inch_cm));
+
+        // Multiple yards conversion (2 yards = 6 feet)
+        Quantity two_yards = new Quantity(2.0, LengthUnit.YARD);
+        Quantity six_feet = new Quantity(6.0, LengthUnit.FEET);
+        System.out.println("Test 27 - Cross-Unit: 2.0 yards and 6.0 feet: " + two_yards.equals(six_feet));
+
+        // Complex transitive property: 1 yard = 3 feet = 36 inches
+        Quantity yard_transitive = new Quantity(1.0, LengthUnit.YARD);
+        Quantity feet_transitive = new Quantity(3.0, LengthUnit.FEET);
+        Quantity inches_transitive = new Quantity(36.0, LengthUnit.INCH);
+        System.out.println("Test 28 - Transitive: 1 yard = 3 feet = 36 inches:");
+        System.out.println("    - 1 yard equals 3 feet: " + yard_transitive.equals(feet_transitive));
+        System.out.println("    - 3 feet equals 36 inches: " + feet_transitive.equals(inches_transitive));
+        System.out.println("    - 1 yard equals 36 inches: " + yard_transitive.equals(inches_transitive));
+
+        // Static method with yards
+        boolean yard_static = checkQuantityEquality(1.0, LengthUnit.YARD, 3.0, LengthUnit.FEET);
+        System.out.println("Test 29 - Static method (Yards): 1.0 yard and 3.0 feet: " + yard_static);
+
+        // Static method with centimeters (2.54 cm = 1 inch)
+        boolean cm_static = checkQuantityEquality(2.54, LengthUnit.CENTIMETER, 1.0, LengthUnit.INCH);
+        System.out.println("Test 30 - Static method (Centimeters): 2.54 cm and 1.0 inch: " + cm_static);
 
         System.out.println("\n========== All Tests Completed ==========");
     }

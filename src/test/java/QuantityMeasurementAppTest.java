@@ -825,4 +825,365 @@ public class QuantityMeasurementAppTest {
         assertTrue(three_feet.equals(thirtysix_inches), "3 feet should equal 36 inches");
         assertTrue(one_yard.equals(thirtysix_inches), "1 yard should equal 36 inches (transitive)");
     }
+
+    // ============== UC4: Yard Unit Tests ==============
+
+    /**
+     * Test: Yard to Yard inequality (same unit, different values)
+     */
+    @Test
+    @DisplayName("testQuantity_YardToYard_DifferentValue - Two Yard quantities with different values should not be equal")
+    public void testQuantity_YardToYard_DifferentValue() {
+        QuantityMeasurementApp.Quantity yard1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity yard2 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertFalse(yard1.equals(yard2), "Two Yard quantities with different values (1.0 and 2.0 yard) should not be equal");
+    }
+
+    /**
+     * Test: Yard to Inches conversion (1 yard = 36 inches)
+     */
+    @Test
+    @DisplayName("testQuantity_YardToInches_EquivalentValue - 1 yard equals 36 inches")
+    public void testQuantity_YardToInches_EquivalentValue() {
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity thirty_six_inches = new QuantityMeasurementApp.Quantity(36.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_yard.equals(thirty_six_inches), "1 yard should equal 36 inches");
+    }
+
+    /**
+     * Test: Inches to Yard conversion (symmetric - 36 inches = 1 yard)
+     */
+    @Test
+    @DisplayName("testQuantity_InchesToYard_EquivalentValue - 36 inches equals 1 yard (symmetric)")
+    public void testQuantity_InchesToYard_EquivalentValue() {
+        QuantityMeasurementApp.Quantity thirty_six_inches = new QuantityMeasurementApp.Quantity(36.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertTrue(thirty_six_inches.equals(one_yard), "36 inches should equal 1 yard (symmetric property)");
+    }
+
+    /**
+     * Test: Yard to Feet non-equivalent (inequality)
+     */
+    @Test
+    @DisplayName("testQuantity_YardToFeet_NonEquivalentValue - 1 yard should not equal 2 feet")
+    public void testQuantity_YardToFeet_NonEquivalentValue() {
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity two_feet = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertFalse(one_yard.equals(two_feet), "1 yard should not equal 2 feet");
+    }
+
+    /**
+     * Test: Multiple yards conversion
+     */
+    @Test
+    @DisplayName("testQuantity_MultipleYards - 2 yards equals 6 feet")
+    public void testQuantity_MultipleYards() {
+        QuantityMeasurementApp.Quantity two_yards = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity six_feet = new QuantityMeasurementApp.Quantity(6.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(two_yards.equals(six_feet), "2 yards should equal 6 feet");
+    }
+
+    /**
+     * Test: Yard hash code consistency
+     */
+    @Test
+    @DisplayName("testQuantity_HashCode_YardCrossUnit - Yard cross-unit hash codes should match")
+    public void testQuantity_HashCode_YardCrossUnit() {
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity three_feet = new QuantityMeasurementApp.Quantity(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(one_yard.equals(three_feet), "1 yard should equal 3 feet");
+        assertEquals(one_yard.hashCode(), three_feet.hashCode(), "Cross-unit yard-feet hash codes should match");
+    }
+
+    // ============== UC4: Centimeter Unit Tests ==============
+
+    /**
+     * Test: Centimeter to Centimeter equality (same unit, same value)
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToCentimeter_SameValue - Two Centimeter quantities with same value should be equal")
+    public void testQuantity_CentimeterToCentimeter_SameValue() {
+        QuantityMeasurementApp.Quantity cm1 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity cm2 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+
+        assertTrue(cm1.equals(cm2), "Two Centimeter quantities with the same value (2.0 cm) should be equal");
+    }
+
+    /**
+     * Test: Centimeter to Centimeter inequality (same unit, different values)
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToCentimeter_DifferentValue - Two Centimeter quantities with different values should not be equal")
+    public void testQuantity_CentimeterToCentimeter_DifferentValue() {
+        QuantityMeasurementApp.Quantity cm1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity cm2 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+
+        assertFalse(cm1.equals(cm2), "Two Centimeter quantities with different values (1.0 and 2.0 cm) should not be equal");
+    }
+
+    /**
+     * Test: Centimeter to Inches conversion (2.54 cm = 1 inch exactly)
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToInches_EquivalentValue - 2.54 centimeters equals 1 inch")
+    public void testQuantity_CentimeterToInches_EquivalentValue() {
+        QuantityMeasurementApp.Quantity two_point_54_cm = new QuantityMeasurementApp.Quantity(2.54, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity one_inch = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(two_point_54_cm.equals(one_inch), "2.54 centimeters should equal 1 inch");
+    }
+
+    /**
+     * Test: Inches to Centimeter conversion (symmetric)
+     */
+    @Test
+    @DisplayName("testQuantity_InchesToCentimeter_EquivalentValue - 1 inch equals 2.54 centimeters (symmetric)")
+    public void testQuantity_InchesToCentimeter_EquivalentValue() {
+        QuantityMeasurementApp.Quantity one_inch = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity two_point_54_cm = new QuantityMeasurementApp.Quantity(2.54, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+
+        assertTrue(one_inch.equals(two_point_54_cm), "1 inch should equal 2.54 centimeters (symmetric property)");
+    }
+
+    /**
+     * Test: Centimeter to Feet conversion
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToFeet - Centimeter to Feet conversion")
+    public void testQuantity_CentimeterToFeet() {
+        QuantityMeasurementApp.Quantity thirty_cm = new QuantityMeasurementApp.Quantity(30.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        // 30 cm * 0.0328084 = 0.984252 feet
+        assertEquals(30.0 * 0.0328084, thirty_cm.getValueInFeet(), 0.0001, 
+            "30 centimeters should convert to approximately 0.984252 feet");
+    }
+
+    /**
+     * Test: Centimeter to Yards conversion
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToYards - Centimeter to Yards conversion")
+    public void testQuantity_CentimeterToYards() {
+        // 1 yard = 3 feet = 91.44 cm (approximately)
+        QuantityMeasurementApp.Quantity yard_cm = new QuantityMeasurementApp.Quantity(91.44, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertEquals(one_yard.getValueInFeet(), yard_cm.getValueInFeet(), 0.001, 
+            "91.44 cm should approximately equal 1 yard when converted to feet");
+    }
+
+    /**
+     * Test: Centimeter cross-unit inequality
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterToInches_NonEquivalentValue - 2 cm should not equal 1 inch")
+    public void testQuantity_CentimeterToInches_NonEquivalentValue() {
+        QuantityMeasurementApp.Quantity two_cm = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity one_inch = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertFalse(two_cm.equals(one_inch), "2 centimeters should not equal 1 inch");
+    }
+
+    /**
+     * Test: Centimeter hash code consistency
+     */
+    @Test
+    @DisplayName("testQuantity_HashCode_CentimeterCrossUnit - Centimeter cross-unit hash codes should match")
+    public void testQuantity_HashCode_CentimeterCrossUnit() {
+        QuantityMeasurementApp.Quantity two_point_54_cm = new QuantityMeasurementApp.Quantity(2.54, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity one_inch = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(two_point_54_cm.equals(one_inch), "2.54 cm should equal 1 inch");
+        assertEquals(two_point_54_cm.hashCode(), one_inch.hashCode(), "Cross-unit cm-inch hash codes should match");
+    }
+
+    // ============== UC4: Complex Multi-Unit Scenarios ==============
+
+    /**
+     * Test: Complex scenario with yards, feet, and inches
+     */
+    @Test
+    @DisplayName("testQuantity_ComplexScenario_YardsFeetInches - 2 yards equals 6 feet equals 72 inches")
+    public void testQuantity_ComplexScenario_YardsFeetInches() {
+        QuantityMeasurementApp.Quantity two_yards = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity six_feet = new QuantityMeasurementApp.Quantity(6.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity seventy_two_inches = new QuantityMeasurementApp.Quantity(72.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(two_yards.equals(six_feet), "2 yards should equal 6 feet");
+        assertTrue(six_feet.equals(seventy_two_inches), "6 feet should equal 72 inches");
+        assertTrue(two_yards.equals(seventy_two_inches), "2 yards should equal 72 inches (transitive)");
+    }
+
+    /**
+     * Test: Transitive property with yards, feet, inches, and centimeters
+     */
+    @Test
+    @DisplayName("testQuantity_TransitiveProperty_AllUnits - Transitive property across all units")
+    public void testQuantity_TransitiveProperty_AllUnits() {
+        // 1 yard = 3 feet
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity three_feet = new QuantityMeasurementApp.Quantity(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        
+        // 3 feet = 36 inches
+        QuantityMeasurementApp.Quantity thirty_six_inches = new QuantityMeasurementApp.Quantity(36.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_yard.equals(three_feet), "1 yard should equal 3 feet");
+        assertTrue(three_feet.equals(thirty_six_inches), "3 feet should equal 36 inches");
+        assertTrue(one_yard.equals(thirty_six_inches), "1 yard should equal 36 inches");
+    }
+
+    /**
+     * Test: Multiple unit conversions with fractional values
+     */
+    @Test
+    @DisplayName("testQuantity_FractionalConversions - Fractional value conversions across units")
+    public void testQuantity_FractionalConversions() {
+        QuantityMeasurementApp.Quantity half_yard = new QuantityMeasurementApp.Quantity(0.5, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity one_half_feet = new QuantityMeasurementApp.Quantity(1.5, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(half_yard.equals(one_half_feet), "0.5 yard should equal 1.5 feet");
+    }
+
+    /**
+     * Test: Yard reflexive property
+     */
+    @Test
+    @DisplayName("testQuantity_YardReflexiveProperty - Yard should equal itself (reflexive)")
+    public void testQuantity_YardReflexiveProperty() {
+        QuantityMeasurementApp.Quantity yard = new QuantityMeasurementApp.Quantity(5.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertTrue(yard.equals(yard), "Yard should equal itself (reflexive property)");
+    }
+
+    /**
+     * Test: Centimeter reflexive property
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterReflexiveProperty - Centimeter should equal itself (reflexive)")
+    public void testQuantity_CentimeterReflexiveProperty() {
+        QuantityMeasurementApp.Quantity cm = new QuantityMeasurementApp.Quantity(10.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+
+        assertTrue(cm.equals(cm), "Centimeter should equal itself (reflexive property)");
+    }
+
+    /**
+     * Test: Yard symmetric property
+     */
+    @Test
+    @DisplayName("testQuantity_YardSymmetricProperty - Yard symmetric property")
+    public void testQuantity_YardSymmetricProperty() {
+        QuantityMeasurementApp.Quantity two_yards = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity six_feet = new QuantityMeasurementApp.Quantity(6.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(two_yards.equals(six_feet), "2 yards should equal 6 feet");
+        assertTrue(six_feet.equals(two_yards), "6 feet should equal 2 yards (symmetric property)");
+    }
+
+    /**
+     * Test: Centimeter symmetric property
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterSymmetricProperty - Centimeter symmetric property")
+    public void testQuantity_CentimeterSymmetricProperty() {
+        QuantityMeasurementApp.Quantity two_point_54_cm = new QuantityMeasurementApp.Quantity(2.54, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        QuantityMeasurementApp.Quantity one_inch = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(two_point_54_cm.equals(one_inch), "2.54 cm should equal 1 inch");
+        assertTrue(one_inch.equals(two_point_54_cm), "1 inch should equal 2.54 cm (symmetric property)");
+    }
+
+    /**
+     * Test: Static method with yards
+     */
+    @Test
+    @DisplayName("testStaticMethod_QuantityEquality_Yards - Static method for yard comparison")
+    public void testStaticMethod_QuantityEquality_Yards() {
+        boolean result = QuantityMeasurementApp.checkQuantityEquality(1.0, QuantityMeasurementApp.LengthUnit.YARD, 
+                                                                       3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        assertTrue(result, "Static method should return true for 1 yard and 3 feet");
+    }
+
+    /**
+     * Test: Static method with centimeters
+     */
+    @Test
+    @DisplayName("testStaticMethod_QuantityEquality_Centimeters - Static method for centimeter comparison")
+    public void testStaticMethod_QuantityEquality_Centimeters() {
+        boolean result = QuantityMeasurementApp.checkQuantityEquality(2.54, QuantityMeasurementApp.LengthUnit.CENTIMETER, 
+                                                                       1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        assertTrue(result, "Static method should return true for 2.54 cm and 1 inch");
+    }
+
+    /**
+     * Test: Yard null comparison
+     */
+    @Test
+    @DisplayName("testQuantity_YardNullComparison - Yard should not equal null")
+    public void testQuantity_YardNullComparison() {
+        QuantityMeasurementApp.Quantity yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertFalse(yard.equals(null), "Yard should not equal null");
+    }
+
+    /**
+     * Test: Centimeter null comparison
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterNullComparison - Centimeter should not equal null")
+    public void testQuantity_CentimeterNullComparison() {
+        QuantityMeasurementApp.Quantity cm = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+
+        assertFalse(cm.equals(null), "Centimeter should not equal null");
+    }
+
+    /**
+     * Test: Yard type checking
+     */
+    @Test
+    @DisplayName("testQuantity_YardTypeChecking - Yard should not equal different types")
+    public void testQuantity_YardTypeChecking() {
+        QuantityMeasurementApp.Quantity yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        String notAQuantity = "1 yard";
+
+        assertFalse(yard.equals(notAQuantity), "Yard should not equal a String");
+    }
+
+    /**
+     * Test: Centimeter type checking
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterTypeChecking - Centimeter should not equal different types")
+    public void testQuantity_CentimeterTypeChecking() {
+        QuantityMeasurementApp.Quantity cm = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        Integer notAQuantity = 1;
+
+        assertFalse(cm.equals(notAQuantity), "Centimeter should not equal an Integer");
+    }
+
+    /**
+     * Test: Yard null unit exception
+     */
+    @Test
+    @DisplayName("testQuantity_YardNullUnit - Yard constructor should throw exception for null unit")
+    public void testQuantity_YardNullUnit() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityMeasurementApp.Quantity(1.0, null);
+        }, "Constructor should throw IllegalArgumentException for null unit with yards");
+    }
+
+    /**
+     * Test: Centimeter null unit exception
+     */
+    @Test
+    @DisplayName("testQuantity_CentimeterNullUnit - Centimeter constructor should throw exception for null unit")
+    public void testQuantity_CentimeterNullUnit() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityMeasurementApp.Quantity(1.0, null);
+        }, "Constructor should throw IllegalArgumentException for null unit with centimeters");
+    }
 }
