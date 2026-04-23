@@ -3,10 +3,11 @@ import org.junit.jupiter.api.DisplayName;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for the QuantityMeasurementApp class.
- * Tests the equality comparison of Feet and Inches measurements following the equality contract.
+ * Unit tests for the QuantityMeasurementApp class - UC3 Refactoring.
+ * Tests the generic Quantity class with LengthUnit enum for comprehensive unit testing.
+ * Includes tests from UC1, UC2, and new UC3 tests for cross-unit comparison.
  */
-@DisplayName("Quantity Measurement App - Feet and Inches Equality Tests")
+@DisplayName("Quantity Measurement App - UC3 Generic Quantity Tests")
 public class QuantityMeasurementAppTest {
 
     // ============== Feet Tests (UC1) ==============
@@ -459,5 +460,369 @@ public class QuantityMeasurementAppTest {
         QuantityMeasurementApp.Inches inches = new QuantityMeasurementApp.Inches(1.0);
 
         assertFalse(feet.equals(inches), "Feet object should not be equal to Inches object (different types)");
+    }
+
+    // ============== UC3: Quantity Class - Same Unit Tests ==============
+
+    /**
+     * Test: Quantity equality with Feet to Feet (same unit, same value)
+     */
+    @Test
+    @DisplayName("testQuantity_FeetToFeet_SameValue - Two Feet quantities with same value should be equal")
+    public void testQuantity_FeetToFeet_SameValue() {
+        QuantityMeasurementApp.Quantity feet1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity feet2 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(feet1.equals(feet2), "Two Feet quantities with the same value (1.0 ft) should be equal");
+    }
+
+    /**
+     * Test: Quantity equality with Inches to Inches (same unit, same value)
+     */
+    @Test
+    @DisplayName("testQuantity_InchToInch_SameValue - Two Inch quantities with same value should be equal")
+    public void testQuantity_InchToInch_SameValue() {
+        QuantityMeasurementApp.Quantity inch1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity inch2 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(inch1.equals(inch2), "Two Inch quantities with the same value (1.0 inch) should be equal");
+    }
+
+    /**
+     * Test: Quantity equality with Yards to Yards (same unit, same value)
+     */
+    @Test
+    @DisplayName("testQuantity_YardToYard_SameValue - Two Yard quantities with same value should be equal")
+    public void testQuantity_YardToYard_SameValue() {
+        QuantityMeasurementApp.Quantity yard1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity yard2 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertTrue(yard1.equals(yard2), "Two Yard quantities with the same value (1.0 yard) should be equal");
+    }
+
+    /**
+     * Test: Quantity inequality with Feet to Feet (same unit, different values)
+     */
+    @Test
+    @DisplayName("testQuantity_FeetToFeet_DifferentValue - Two Feet quantities with different values should not be equal")
+    public void testQuantity_FeetToFeet_DifferentValue() {
+        QuantityMeasurementApp.Quantity feet1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity feet2 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertFalse(feet1.equals(feet2), "Two Feet quantities with different values (1.0 and 2.0 ft) should not be equal");
+    }
+
+    /**
+     * Test: Quantity inequality with Inches to Inches (same unit, different values)
+     */
+    @Test
+    @DisplayName("testQuantity_InchToInch_DifferentValue - Two Inch quantities with different values should not be equal")
+    public void testQuantity_InchToInch_DifferentValue() {
+        QuantityMeasurementApp.Quantity inch1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity inch2 = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertFalse(inch1.equals(inch2), "Two Inch quantities with different values (1.0 and 2.0 inch) should not be equal");
+    }
+
+    // ============== UC3: Quantity Class - Cross-Unit Tests ==============
+
+    /**
+     * Test: Cross-unit equality - Feet to Inches (1 foot = 12 inches)
+     */
+    @Test
+    @DisplayName("testQuantity_FeetToInch_EquivalentValue - 1 foot equals 12 inches (cross-unit)")
+    public void testQuantity_FeetToInch_EquivalentValue() {
+        QuantityMeasurementApp.Quantity one_foot = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_foot.equals(twelve_inches), "1 foot should equal 12 inches (cross-unit comparison)");
+    }
+
+    /**
+     * Test: Cross-unit equality (symmetric) - Inches to Feet
+     */
+    @Test
+    @DisplayName("testQuantity_InchToFeet_EquivalentValue_Symmetric - 12 inches equals 1 foot (symmetry)")
+    public void testQuantity_InchToFeet_EquivalentValue_Symmetric() {
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity one_foot = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(twelve_inches.equals(one_foot), "12 inches should equal 1 foot (symmetric property)");
+    }
+
+    /**
+     * Test: Cross-unit equality - Yards to Feet (1 yard = 3 feet)
+     */
+    @Test
+    @DisplayName("testQuantity_YardToFeet_EquivalentValue - 1 yard equals 3 feet (cross-unit)")
+    public void testQuantity_YardToFeet_EquivalentValue() {
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity three_feet = new QuantityMeasurementApp.Quantity(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(one_yard.equals(three_feet), "1 yard should equal 3 feet (cross-unit comparison)");
+    }
+
+    /**
+     * Test: Cross-unit equality - Feet to Yards (symmetric)
+     */
+    @Test
+    @DisplayName("testQuantity_FeetToYard_EquivalentValue_Symmetric - 3 feet equals 1 yard (symmetry)")
+    public void testQuantity_FeetToYard_EquivalentValue_Symmetric() {
+        QuantityMeasurementApp.Quantity three_feet = new QuantityMeasurementApp.Quantity(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertTrue(three_feet.equals(one_yard), "3 feet should equal 1 yard (symmetric property)");
+    }
+
+    /**
+     * Test: Cross-unit inequality - 2 feet does not equal 12 inches
+     */
+    @Test
+    @DisplayName("testQuantity_CrossUnit_DifferentValue - 2 feet does not equal 12 inches")
+    public void testQuantity_CrossUnit_DifferentValue() {
+        QuantityMeasurementApp.Quantity two_feet = new QuantityMeasurementApp.Quantity(2.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertFalse(two_feet.equals(twelve_inches), "2 feet should not equal 12 inches");
+    }
+
+    /**
+     * Test: Cross-unit - Inches to Yards (equivalent)
+     */
+    @Test
+    @DisplayName("testQuantity_InchToYard_EquivalentValue - 36 inches equals 1 yard")
+    public void testQuantity_InchToYard_EquivalentValue() {
+        QuantityMeasurementApp.Quantity thirtysix_inches = new QuantityMeasurementApp.Quantity(36.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+
+        assertTrue(thirtysix_inches.equals(one_yard), "36 inches should equal 1 yard");
+    }
+
+    // ============== UC3: Quantity Class - Equality Contract Tests ==============
+
+    /**
+     * Test: Reflexive property - a equals itself
+     */
+    @Test
+    @DisplayName("testQuantity_ReflexiveProperty - Quantity should equal itself")
+    public void testQuantity_ReflexiveProperty() {
+        QuantityMeasurementApp.Quantity quantity = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(quantity.equals(quantity), "Quantity should equal itself (reflexive property)");
+    }
+
+    /**
+     * Test: Symmetric property - if a equals b then b equals a
+     */
+    @Test
+    @DisplayName("testQuantity_SymmetricProperty - Symmetric property for cross-unit comparison")
+    public void testQuantity_SymmetricProperty() {
+        QuantityMeasurementApp.Quantity one_foot = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_foot.equals(twelve_inches), "one_foot should equal twelve_inches");
+        assertTrue(twelve_inches.equals(one_foot), "twelve_inches should equal one_foot (symmetric property)");
+    }
+
+    /**
+     * Test: Transitive property - if a equals b and b equals c then a equals c
+     */
+    @Test
+    @DisplayName("testQuantity_TransitiveProperty - Transitive property for cross-unit comparison")
+    public void testQuantity_TransitiveProperty() {
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.Quantity one_foot = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity one_foot_again = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(twelve_inches.equals(one_foot), "12 inches should equal 1 foot");
+        assertTrue(one_foot.equals(one_foot_again), "1 foot should equal 1 foot");
+        assertTrue(twelve_inches.equals(one_foot_again), "12 inches should equal 1 foot (transitive property)");
+    }
+
+    /**
+     * Test: Null comparison
+     */
+    @Test
+    @DisplayName("testQuantity_NullComparison - Quantity should not equal null")
+    public void testQuantity_NullComparison() {
+        QuantityMeasurementApp.Quantity quantity = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertFalse(quantity.equals(null), "Quantity should not equal null");
+    }
+
+    /**
+     * Test: Different type comparison
+     */
+    @Test
+    @DisplayName("testQuantity_DifferentTypeComparison - Quantity should not equal different types")
+    public void testQuantity_DifferentTypeComparison() {
+        QuantityMeasurementApp.Quantity quantity = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        String notAQuantity = "1.0";
+
+        assertFalse(quantity.equals(notAQuantity), "Quantity should not equal a String");
+    }
+
+    /**
+     * Test: Null unit throws exception
+     */
+    @Test
+    @DisplayName("testQuantity_NullUnit - Constructor should throw exception for null unit")
+    public void testQuantity_NullUnit() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new QuantityMeasurementApp.Quantity(1.0, null);
+        }, "Constructor should throw IllegalArgumentException for null unit");
+    }
+
+    // ============== UC3: Quantity Class - Hash Code Tests ==============
+
+    /**
+     * Test: Hash code consistency for same-unit equal quantities
+     */
+    @Test
+    @DisplayName("testQuantity_HashCode_SameUnit - Equal quantities should have same hash code")
+    public void testQuantity_HashCode_SameUnit() {
+        QuantityMeasurementApp.Quantity feet1 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity feet2 = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertTrue(feet1.equals(feet2), "feet1 should equal feet2");
+        assertEquals(feet1.hashCode(), feet2.hashCode(), "Equal quantities should have the same hash code");
+    }
+
+    /**
+     * Test: Hash code consistency for cross-unit equal quantities
+     */
+    @Test
+    @DisplayName("testQuantity_HashCode_CrossUnit - Cross-unit equal quantities should have same hash code")
+    public void testQuantity_HashCode_CrossUnit() {
+        QuantityMeasurementApp.Quantity one_foot = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_foot.equals(twelve_inches), "1 foot should equal 12 inches");
+        assertEquals(one_foot.hashCode(), twelve_inches.hashCode(), 
+            "Cross-unit equal quantities should have the same hash code");
+    }
+
+    // ============== UC3: Static Method Tests ==============
+
+    /**
+     * Test: Static method for same-unit comparison
+     */
+    @Test
+    @DisplayName("testStaticMethod_QuantityEquality_SameUnit - Static method for same-unit comparison")
+    public void testStaticMethod_QuantityEquality_SameUnit() {
+        boolean result = QuantityMeasurementApp.checkQuantityEquality(1.0, QuantityMeasurementApp.LengthUnit.FEET, 
+                                                                       1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        assertTrue(result, "Static method should return true for equal feet quantities");
+    }
+
+    /**
+     * Test: Static method for cross-unit comparison
+     */
+    @Test
+    @DisplayName("testStaticMethod_QuantityEquality_CrossUnit - Static method for cross-unit comparison")
+    public void testStaticMethod_QuantityEquality_CrossUnit() {
+        boolean result = QuantityMeasurementApp.checkQuantityEquality(1.0, QuantityMeasurementApp.LengthUnit.FEET, 
+                                                                       12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        assertTrue(result, "Static method should return true for 1 foot and 12 inches");
+    }
+
+    /**
+     * Test: Static method for different values
+     */
+    @Test
+    @DisplayName("testStaticMethod_QuantityEquality_DifferentValue - Static method should return false for different values")
+    public void testStaticMethod_QuantityEquality_DifferentValue() {
+        boolean result = QuantityMeasurementApp.checkQuantityEquality(2.0, QuantityMeasurementApp.LengthUnit.FEET, 
+                                                                       12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        assertFalse(result, "Static method should return false for 2 feet and 12 inches");
+    }
+
+    // ============== Backward Compatibility Tests (UC1 & UC2) ==============
+
+    /**
+     * Test: Legacy Feet class still works (backward compatibility)
+     */
+    @Test
+    @DisplayName("testBackwardCompatibility_Feet - Legacy Feet class should still work")
+    public void testBackwardCompatibility_Feet() {
+        QuantityMeasurementApp.Feet feet1 = new QuantityMeasurementApp.Feet(1.0);
+        QuantityMeasurementApp.Feet feet2 = new QuantityMeasurementApp.Feet(1.0);
+
+        assertTrue(feet1.equals(feet2), "Legacy Feet class should work for backward compatibility");
+    }
+
+    /**
+     * Test: Legacy Inches class still works (backward compatibility)
+     */
+    @Test
+    @DisplayName("testBackwardCompatibility_Inches - Legacy Inches class should still work")
+    public void testBackwardCompatibility_Inches() {
+        QuantityMeasurementApp.Inches inch1 = new QuantityMeasurementApp.Inches(1.0);
+        QuantityMeasurementApp.Inches inch2 = new QuantityMeasurementApp.Inches(1.0);
+
+        assertTrue(inch1.equals(inch2), "Legacy Inches class should work for backward compatibility");
+    }
+
+    /**
+     * Test: Legacy static methods still work (backward compatibility)
+     */
+    @Test
+    @DisplayName("testBackwardCompatibility_StaticMethods - Legacy static methods should still work")
+    public void testBackwardCompatibility_StaticMethods() {
+        boolean feetResult = QuantityMeasurementApp.checkFeetEquality(1.0, 1.0);
+        boolean inchResult = QuantityMeasurementApp.checkInchesEquality(1.0, 1.0);
+
+        assertTrue(feetResult, "Legacy checkFeetEquality should work");
+        assertTrue(inchResult, "Legacy checkInchesEquality should work");
+    }
+
+    // ============== Additional Quantity Tests ==============
+
+    /**
+     * Test: Quantity getValue() method
+     */
+    @Test
+    @DisplayName("testQuantity_GetValue - getValue should return the correct value")
+    public void testQuantity_GetValue() {
+        QuantityMeasurementApp.Quantity quantity = new QuantityMeasurementApp.Quantity(5.5, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertEquals(5.5, quantity.getValue(), "getValue() should return the correct value");
+    }
+
+    /**
+     * Test: Quantity getUnit() method
+     */
+    @Test
+    @DisplayName("testQuantity_GetUnit - getUnit should return the correct unit")
+    public void testQuantity_GetUnit() {
+        QuantityMeasurementApp.Quantity quantity = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+
+        assertEquals(QuantityMeasurementApp.LengthUnit.FEET, quantity.getUnit(), "getUnit() should return FEET");
+    }
+
+    /**
+     * Test: Quantity getValueInFeet() method
+     */
+    @Test
+    @DisplayName("testQuantity_GetValueInFeet - getValueInFeet should convert correctly")
+    public void testQuantity_GetValueInFeet() {
+        QuantityMeasurementApp.Quantity twelve_inches = new QuantityMeasurementApp.Quantity(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertEquals(1.0, twelve_inches.getValueInFeet(), 0.0001, "12 inches should convert to 1 foot");
+    }
+
+    /**
+     * Test: Multiple cross-unit conversions (transitive)
+     */
+    @Test
+    @DisplayName("testQuantity_MultipleConversions - Test multiple unit conversions transitively")
+    public void testQuantity_MultipleConversions() {
+        QuantityMeasurementApp.Quantity one_yard = new QuantityMeasurementApp.Quantity(1.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.Quantity three_feet = new QuantityMeasurementApp.Quantity(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.Quantity thirtysix_inches = new QuantityMeasurementApp.Quantity(36.0, QuantityMeasurementApp.LengthUnit.INCH);
+
+        assertTrue(one_yard.equals(three_feet), "1 yard should equal 3 feet");
+        assertTrue(three_feet.equals(thirtysix_inches), "3 feet should equal 36 inches");
+        assertTrue(one_yard.equals(thirtysix_inches), "1 yard should equal 36 inches (transitive)");
     }
 }

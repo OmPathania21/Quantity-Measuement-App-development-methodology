@@ -2,19 +2,183 @@ import java.util.Objects;
 
 /**
  * QuantityMeasurementApp class is responsible for checking the equality of
- * two numerical values measured in feet and inches within the Quantity Measurement Application.
- * It ensures accurate comparisons and handles various edge cases.
+ * numerical values measured in various units within the Quantity Measurement Application.
+ * It uses a generic Quantity class with unit support to eliminate code duplication
+ * and apply the DRY (Don't Repeat Yourself) principle.
  * 
- * Note: This implementation uses separate Feet and Inches classes which currently violates
- * the DRY principle. A future refactoring should extract common logic into a generic Quantity class
- * to eliminate code duplication.
+ * UC3 Refactoring: Consolidates Feet and Inches into a single Quantity class
+ * with support for multiple units defined via LengthUnit enum.
  */
 public class QuantityMeasurementApp {
 
     /**
+     * Enum representing different length units and their conversion factors to feet (base unit).
+     * This encapsulates all supported measurement units and their relationships.
+     */
+    public enum LengthUnit {
+        FEET(1.0),           // Base unit: 1 foot = 1 foot
+        INCH(1.0 / 12.0),    // 1 inch = 1/12 foot
+        YARD(3.0),           // 1 yard = 3 feet
+        CENTIMETER(0.0328084); // 1 cm = 0.0328084 feet (approximately)
+
+        private final double conversionFactorToFeet;
+
+        /**
+         * Constructor for LengthUnit enum.
+         *
+         * @param conversionFactorToFeet the conversion factor from this unit to feet
+         */
+        LengthUnit(double conversionFactorToFeet) {
+            this.conversionFactorToFeet = conversionFactorToFeet;
+        }
+
+        /**
+         * Returns the conversion factor from this unit to feet.
+         *
+         * @return the conversion factor to feet
+         */
+        public double getConversionFactorToFeet() {
+            return conversionFactorToFeet;
+        }
+
+        /**
+         * Converts a value from this unit to feet.
+         *
+         * @param value the value in this unit
+         * @return the equivalent value in feet
+         */
+        public double convertToFeet(double value) {
+            return value * conversionFactorToFeet;
+        }
+    }
+
+    /**
+     * Generic Quantity class representing a measurement with a value and unit type.
+     * This class eliminates code duplication by handling all unit types in a single class.
+     * Immutable class that encapsulates a measurement value and its unit.
+     * 
+     * UC3: Refactored to follow DRY principle and eliminate separate Feet/Inches classes.
+     */
+    public static class Quantity {
+        private final double value;
+        private final LengthUnit unit;
+
+        /**
+         * Constructor to initialize a Quantity object with a value and unit.
+         *
+         * @param value the numerical value representing the measurement
+         * @param unit the LengthUnit of the measurement (e.g., FEET, INCH)
+         * @throws IllegalArgumentException if unit is null
+         */
+        public Quantity(double value, LengthUnit unit) {
+            if (unit == null) {
+                throw new IllegalArgumentException("Unit cannot be null");
+            }
+            this.value = value;
+            this.unit = unit;
+        }
+
+        /**
+         * Returns the value of the measurement.
+         *
+         * @return the measurement value as a double
+         */
+        public double getValue() {
+            return value;
+        }
+
+        /**
+         * Returns the unit of the measurement.
+         *
+         * @return the LengthUnit of this measurement
+         */
+        public LengthUnit getUnit() {
+            return unit;
+        }
+
+        /**
+         * Returns the value of this measurement converted to feet.
+         *
+         * @return the value converted to feet (base unit)
+         */
+        public double getValueInFeet() {
+            return unit.convertToFeet(value);
+        }
+
+        /**
+         * Compares this Quantity object with another object for equality.
+         * Implements the equals contract:
+         * - Reflexive: a.equals(a) returns true
+         * - Symmetric: if a.equals(b) then b.equals(a)
+         * - Transitive: if a.equals(b) and b.equals(c) then a.equals(c)
+         * - Consistent: multiple calls return the same result
+         * - Null handling: a.equals(null) returns false
+         * 
+         * Cross-unit comparison is supported: 1 foot equals 12 inches.
+         *
+         * @param obj the object to compare with
+         * @return true if both objects represent the same measurement when converted to base unit, false otherwise
+         */
+        @Override
+        public boolean equals(Object obj) {
+            // Check if the same reference
+            if (this == obj) {
+                return true;
+            }
+
+            // Check if null or different type
+            if (obj == null || this.getClass() != obj.getClass()) {
+                return false;
+            }
+
+            // Safe cast to Quantity
+            Quantity other = (Quantity) obj;
+
+            // Compare values by converting both to base unit (feet)
+            return Double.compare(this.getValueInFeet(), other.getValueInFeet()) == 0;
+        }
+
+        /**
+         * Returns a hash code for this Quantity object.
+         * Consistent with equals() method to maintain the hash code contract.
+         * Uses the value converted to base unit (feet) for consistency.
+         *
+         * @return the hash code value
+         */
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.getValueInFeet());
+        }
+
+        /**
+         * Returns a string representation of this Quantity object.
+         *
+         * @return string representation in the format "Quantity{value=X.X, unit=UNIT}"
+         */
+        @Override
+        public String toString() {
+            return "Quantity{" +
+                    "value=" + value +
+                    ", unit=" + unit +
+                    '}';
+        }
+    }
+
+    // ============== Legacy Classes for Backward Compatibility (UC1 & UC2) ==============
+
+    /**
      * Inner Feet class to represent a feet measurement.
+     * DEPRECATED: Use Quantity class with LengthUnit.FEET instead.
+     * Maintained for backward compatibility with UC1.
      * Immutable class that encapsulates a feet measurement value.
      */
+    /**
+     * Inner Feet class to represent a feet measurement.
+     * DEPRECATED: Use Quantity class with LengthUnit.FEET instead.
+     * Maintained for backward compatibility with UC1.
+     * Immutable class that encapsulates a feet measurement value.
+     */
+    @Deprecated
     public static class Feet {
         private final double value;
 
@@ -93,9 +257,11 @@ public class QuantityMeasurementApp {
 
     /**
      * Inner Inches class to represent an inches measurement.
+     * DEPRECATED: Use Quantity class with LengthUnit.INCH instead.
+     * Maintained for backward compatibility with UC2.
      * Immutable class that encapsulates an inches measurement value.
-     * Implementation mirrors the Feet class structure.
      */
+    @Deprecated
     public static class Inches {
         private final double value;
 
@@ -174,12 +340,13 @@ public class QuantityMeasurementApp {
 
     /**
      * Static method to check equality of two feet values.
-     * This method encapsulates the logic for feet equality checks.
+     * DEPRECATED: Use checkQuantityEquality with LengthUnit.FEET instead.
      *
      * @param feet1Value the first feet measurement value
      * @param feet2Value the second feet measurement value
      * @return true if the two feet values are equal, false otherwise
      */
+    @Deprecated
     public static boolean checkFeetEquality(double feet1Value, double feet2Value) {
         Feet feet1 = new Feet(feet1Value);
         Feet feet2 = new Feet(feet2Value);
@@ -188,16 +355,34 @@ public class QuantityMeasurementApp {
 
     /**
      * Static method to check equality of two inches values.
-     * This method encapsulates the logic for inches equality checks.
+     * DEPRECATED: Use checkQuantityEquality with LengthUnit.INCH instead.
      *
      * @param inches1Value the first inches measurement value
      * @param inches2Value the second inches measurement value
      * @return true if the two inches values are equal, false otherwise
      */
+    @Deprecated
     public static boolean checkInchesEquality(double inches1Value, double inches2Value) {
         Inches inches1 = new Inches(inches1Value);
         Inches inches2 = new Inches(inches2Value);
         return inches1.equals(inches2);
+    }
+
+    /**
+     * Static method to check equality of two Quantity values.
+     * Supports cross-unit comparison (e.g., 1 foot equals 12 inches).
+     *
+     * @param value1 the first measurement value
+     * @param unit1 the unit of the first measurement
+     * @param value2 the second measurement value
+     * @param unit2 the unit of the second measurement
+     * @return true if the two quantities are equal (after conversion to base unit), false otherwise
+     */
+    public static boolean checkQuantityEquality(double value1, LengthUnit unit1, 
+                                                 double value2, LengthUnit unit2) {
+        Quantity quantity1 = new Quantity(value1, unit1);
+        Quantity quantity2 = new Quantity(value2, unit2);
+        return quantity1.equals(quantity2);
     }
 
     /**
@@ -256,4 +441,56 @@ public class QuantityMeasurementApp {
         // Using static methods for inches equality
         System.out.println("Test 11 - Using static method (1.0 inch and 1.0 inch): " + checkInchesEquality(1.0, 1.0));
         System.out.println("Test 12 - Using static method (1.0 inch and 2.0 inch): " + checkInchesEquality(1.0, 2.0));
+
+        System.out.println("\n========== UC3: Generic Quantity Class (Same-Unit Comparisons) ==========");
+        
+        // Test Case 13: Feet to Feet comparison
+        Quantity feet_qty1 = new Quantity(1.0, LengthUnit.FEET);
+        Quantity feet_qty2 = new Quantity(1.0, LengthUnit.FEET);
+        System.out.println("Test 13 - Feet to Feet (1.0 ft and 1.0 ft): " + feet_qty1.equals(feet_qty2));
+
+        // Test Case 14: Inch to Inch comparison
+        Quantity inch_qty1 = new Quantity(1.0, LengthUnit.INCH);
+        Quantity inch_qty2 = new Quantity(1.0, LengthUnit.INCH);
+        System.out.println("Test 14 - Inch to Inch (1.0 inch and 1.0 inch): " + inch_qty1.equals(inch_qty2));
+
+        // Test Case 15: Yard to Yard comparison
+        Quantity yard_qty1 = new Quantity(1.0, LengthUnit.YARD);
+        Quantity yard_qty2 = new Quantity(1.0, LengthUnit.YARD);
+        System.out.println("Test 15 - Yard to Yard (1.0 yard and 1.0 yard): " + yard_qty1.equals(yard_qty2));
+
+        System.out.println("\n========== UC3: Cross-Unit Comparisons (Equivalent Values) ==========");
+        
+        // Test Case 16: Feet to Inches (1 ft = 12 inches)
+        Quantity one_foot = new Quantity(1.0, LengthUnit.FEET);
+        Quantity twelve_inches = new Quantity(12.0, LengthUnit.INCH);
+        System.out.println("Test 16 - Cross-Unit: 1.0 ft and 12.0 inches: " + one_foot.equals(twelve_inches));
+
+        // Test Case 17: Inches to Feet (symmetric property)
+        Quantity twelve_inches_qty = new Quantity(12.0, LengthUnit.INCH);
+        Quantity one_foot_qty = new Quantity(1.0, LengthUnit.FEET);
+        System.out.println("Test 17 - Cross-Unit Symmetric: 12.0 inches and 1.0 ft: " + twelve_inches_qty.equals(one_foot_qty));
+
+        // Test Case 18: Yards to Feet (1 yard = 3 feet)
+        Quantity one_yard = new Quantity(1.0, LengthUnit.YARD);
+        Quantity three_feet = new Quantity(3.0, LengthUnit.FEET);
+        System.out.println("Test 18 - Cross-Unit: 1.0 yard and 3.0 feet: " + one_yard.equals(three_feet));
+
+        // Test Case 19: Different values across units
+        Quantity two_feet = new Quantity(2.0, LengthUnit.FEET);
+        Quantity twelve_inches_diff = new Quantity(12.0, LengthUnit.INCH);
+        System.out.println("Test 19 - Cross-Unit Different: 2.0 ft and 12.0 inches (should be false): " + two_feet.equals(twelve_inches_diff));
+
+        System.out.println("\n========== UC3: Static Method for Generic Quantity ==========");
+        
+        // Test Case 20: Static method with cross-unit comparison
+        boolean crossUnitResult = checkQuantityEquality(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCH);
+        System.out.println("Test 20 - Static method: 1.0 ft and 12.0 inches: " + crossUnitResult);
+
+        // Test Case 21: Static method with same unit
+        boolean sameUnitResult = checkQuantityEquality(1.0, LengthUnit.FEET, 1.0, LengthUnit.FEET);
+        System.out.println("Test 21 - Static method: 1.0 ft and 1.0 ft: " + sameUnitResult);
+
+        System.out.println("\n========== All Tests Completed ==========");
     }
+}
